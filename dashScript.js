@@ -436,6 +436,45 @@ document.addEventListener('DOMContentLoaded', () => {
     updateForecast(defaultCity);
     updateTrafficMap(defaultCity);
     fetchLocalEvents(defaultCity);
+
+    locationButton.addEventListener('click', () => {
+    // Fetch location using IPGeolocation API
+    fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch location data.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const lat = parseFloat(data.latitude);
+            const lon = parseFloat(data.longitude);
+
+            // Perform reverse geocoding to get an accurate city name
+            const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
+
+            return fetch(reverseGeoUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to perform reverse geocoding.');
+                    }
+                    return response.json();
+                })
+                .then(geoData => {
+                    const city = geoData[0]?.name || data.city || 'Your Location';
+                    // Update weather, forecast, and traffic data
+                    getWeather(lat, lon, city);
+                    updateForecast(city);
+                    trafficMap.setCenter({ lat, lng: lon });
+                    trafficMap.setZoom(13);
+                    updateTrafficInfo(lat, lon);
+                });
+        })
+        .catch(error => {
+            console.error('Error during location retrieval:', error);
+            alert('Failed to retrieve your location. Please try again.');
+        });
+
 });
 
 /* ==================== Header Scroll Effect ==================== */
@@ -448,44 +487,4 @@ window.addEventListener('scroll', function () {
     }
 });
 
-locationButton.addEventListener('click', () => {
-    // Check if Geolocation API is available in the browser
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
 
-                // Perform reverse geocoding to get accurate city name
-                const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
-
-                fetch(reverseGeoUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to perform reverse geocoding.');
-                        }
-                        return response.json();
-                    })
-                    .then(geoData => {
-                        const city = geoData[0]?.name || 'Your Location';
-                        // Update weather, forecast, and traffic data
-                        getWeather(lat, lon, city);
-                        updateForecast(city);
-                        trafficMap.setCenter({ lat, lng: lon });
-                        trafficMap.setZoom(13);
-                        updateTrafficInfo(lat, lon);
-                    })
-                    .catch(error => {
-                        console.error('Error during reverse geocoding:', error);
-                        alert('Failed to retrieve your location.');
-                    });
-            },
-            (error) => {
-                console.error('Error getting geolocation:', error);
-                alert('Failed to retrieve your location. Please enable GPS and try again.');
-            }
-        );
-    } else {
-        alert('Geolocation is not supported by this browser.');
-    }
-});
