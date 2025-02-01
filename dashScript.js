@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
+    const locationButton = document.getElementById('locationButton');
 
     searchButton.addEventListener('click', () => {
         const city = document.getElementById('citySearch').value.trim();
@@ -201,32 +202,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function useCurrentLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
+    locationButton.addEventListener('click', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-            // Update the weather map with the user's location
-            weatherMap.setView([lat, lon], 13); // Use the correct map object, weatherMap
-            L.marker([lat, lon]).addTo(weatherMap)
-                .bindPopup('You are here!')
-                .openPopup();
+                // Perform reverse geocoding to get accurate city name
+                const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
 
-            // Fetch weather and traffic data based on user's location
-            getWeather(lat, lon); // Call with lat, lon, no city name
-            updateForecast(''); // Update forecast without a city name
-            updateTrafficInfo(lat, lon); // Update traffic info using user's location
-        }, function (error) {
-            alert("Geolocation failed: " + error.message);
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-// Add event listener to the "Use My Location" button
-document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
+                fetch(reverseGeoUrl)
+                    .then(response => response.json())
+                    .then(geoData => {
+                        const city = geoData[0]?.name || 'Your Location';
+                        getWeather(lat, lon, city);
+                        updateForecast(city);
+                        trafficMap.setCenter({ lat, lng: lon });
+                        trafficMap.setZoom(13);
+                        updateTrafficInfo(lat, lon);
+                    })
+                    .catch(error => {
+                        console.error('Error during reverse geocoding:', error);
+                        alert('Failed to retrieve your location.');
+                    });
+            }, (error) => {
+                console.error('Error retrieving geolocation:', error);
+                alert('Geolocation permission denied or unavailable.');
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
 
     /* ==================== HERE Traffic Map ==================== */
     // Initialize HERE platform with your API key
