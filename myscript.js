@@ -1,4 +1,3 @@
-
 // Initialize the map
 var map = L.map('map').setView([0, 0], 2);
 
@@ -7,42 +6,72 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
 }).addTo(map);
 
-// API Keys
-var apiKey = '0a3ca98b38e84a407ded4d891b605c50'; // OpenWeatherMap
-var tomtomApiKey = 'a3QDSH5n7djQK1sLSjglAJVZPNNxOjH6'; // TomTom Traffic
-var geoApiKey = 'b210b7b34c19429891fe3554d9a60476'; // IPGeolocation
+// OpenWeatherMap API key lkl
+var apiKey = '0a3ca98b38e84a407ded4d891b605c50';
 
-// Function to update weather and traffic
+// Layers for precipitation, clouds, pressure, temperature, and wind
+var precipitationLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+var cloudsLayer = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+var pressureLayer = L.tileLayer(`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+var temperatureLayer = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+var windLayer = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+
+// Layer control
+var overlayMaps = {
+    "Precipitation": precipitationLayer,
+    "Clouds": cloudsLayer,
+    "Pressure": pressureLayer,
+    "Temperature": temperatureLayer,
+    "Wind": windLayer
+};
+
+L.control.layers(null, overlayMaps).addTo(map);
+
+// Set default layers
+precipitationLayer.addTo(map);
+
+// TomTom Traffic API key
+var tomtomApiKey = 'a3QDSH5n7djQK1sLSjglAJVZPNNxOjH6';
+// OpenWeatherMap API key
+var apiKey = '0a3ca98b38e84a407ded4d891b605c50';
+
+// Function to get traffic conditions
+function getTrafficConditions(lat, lon) {
+    $.getJSON(`https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json?point=${lat},${lon}&key=${tomtomApiKey}`, function (data) {
+        var traffic = data.flowSegmentData.currentSpeed / data.flowSegmentData.freeFlowSpeed;
+        var condition = "Unknown";
+
+        if (traffic >= 0.9) {
+            condition = "Light";
+        } else if (traffic >= 0.7) {
+            condition = "Medium";
+        } else {
+            condition = "Heavy";
+        }
+
+        document.getElementById('trafficCondition').textContent = `Traffic Condition: ${condition}`;
+    }).fail(function () {
+        document.getElementById('trafficCondition').textContent = 'Traffic Condition: N/A';
+    });
+}
+
+// Modified function to include weather and traffic information
 function updateWeatherAndTraffic(city, lat, lon) {
     // Update weather information
-    $.getJSON(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
-        .done(function (data) {
-            document.getElementById('weatherCity').textContent = city;
-            document.getElementById('weatherTemp').textContent = `Temperature: ${data.main.temp} °C`;
-            document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${data.main.feels_like} °C`;
-            document.getElementById('weatherCondition').textContent = `Weather: ${data.weather[0].description}`;
-        })
-        .fail(function () {
-            console.error("Failed to fetch weather data");
-        });
+    $.getJSON(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`, function (data) {
+        document.getElementById('weatherCity').textContent = city;
+        document.getElementById('weatherTemp').textContent = `Temperature: ${data.main.temp} C`;
+        document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${data.main.feels_like} C`;
+        document.getElementById('weatherCondition').textContent = `Weather: ${data.weather[0].description}`;
+    });
 
     // Get traffic conditions
-    $.getJSON(`https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json?point=${lat},${lon}&key=${tomtomApiKey}`)
-        .done(function (data) {
-            var traffic = data.flowSegmentData.currentSpeed / data.flowSegmentData.freeFlowSpeed;
-            var condition = traffic <= 0.7 ? "Light" : traffic <= 0.9 ? "Medium" : "Heavy";
-            document.getElementById('trafficCondition').textContent = `Traffic Condition: ${condition}`;
-        })
-        .fail(function () {
-            document.getElementById('trafficCondition').textContent = 'Traffic Condition: N/A';
-        });
-
-    // Update map
-    map.setView([lat, lon], 10);
-    L.marker([lat, lon]).addTo(map).bindPopup("You are here!").openPopup();
+    getTrafficConditions(lat, lon);
 }
 
 // Get user's precise location
+var geoApiKey = 'b210b7b34c19429891fe3554d9a60476'; // IPGeolocation
+
 function getUserLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -74,79 +103,32 @@ function fallbackToIPGeolocation() {
         });
 }
 
-// Search city functionality
+// Search button functionality with weather and traffic update
 document.getElementById('searchButton').addEventListener('click', function () {
     var city = document.getElementById('citySearch').value;
+
     if (city) {
-        $.getJSON(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
-            .done(function (data) {
-                if (data.length > 0) {
-                    updateWeatherAndTraffic(city, data[0].lat, data[0].lon);
-                } else {
-                    alert("City not found. Please try another city.");
-                }
-            })
-            .fail(function () {
-                alert("Failed to retrieve city data.");
-            });
+        $.getJSON(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`, function (data) {
+            if (data && data.length > 0) {
+                var lat = data[0].lat;
+                var lon = data[0].lon;
+
+                // Update the map to the searched city's location
+                map.setView([lat, lon], 10);
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup(`${city}`)
+                    .openPopup();
+
+                // Update weather and traffic information
+                updateWeatherAndTraffic(city, lat, lon);
+            } else {
+                alert("City not found. Please try another city.");
+            }
+        }).fail(function () {
+            alert("Failed to retrieve city data.");
+        });
     } else {
         alert("Please enter a city.");
-    }
-});
-
-// Card functionality
-document.querySelectorAll('.read-more').forEach(button => {
-    button.addEventListener('click', function () {
-        const cardContent = this.previousElementSibling;
-        cardContent.style.display = (cardContent.style.display === 'block') ? 'none' : 'block';
-        this.textContent = (cardContent.style.display === 'block') ? 'Show Less' : 'Read More';
-    });
-});
-
-// Navigation button functionality
-document.getElementById('navigateButton').addEventListener('click', function () {
-    window.location.href = 'anotherpage.html';
-});
-
-// Toggle navigation menu on mobile
-document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    menuToggle.addEventListener('click', () => {
-        mainNav.classList.toggle('show');
-    });
-
-    // Forecast Navigation
-    let currentIndex = 0;
-    const forecastContainer = document.querySelector('.forecast-container');
-    const cards = document.querySelectorAll('.forecast-cards .card1');
-
-    if (forecastContainer && cards.length) {
-        const cardWidth = cards[0].offsetWidth + 15;
-
-        document.querySelector('.next').addEventListener('click', () => {
-            if (currentIndex < cards.length - 1) {
-                currentIndex++;
-                forecastContainer.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-            }
-        });
-
-        document.querySelector('.prev').addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                forecastContainer.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-            }
-        });
-    }
-});
-
-// Smooth Header Scroll Effect
-window.addEventListener('scroll', function () {
-    const header = document.querySelector('header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
     }
 });
 
