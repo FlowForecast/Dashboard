@@ -215,7 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .openPopup();
 
             // Fetch weather and traffic data based on user's location
-            getWeatherData(lat, lon);
+            getWeather(lat, lon, city);
+            updateForecast(city);
+            trafficMap.setCenter({ lat, lng: lon });
+            trafficMap.setZoom(13);
+            updateTrafficInfo(lat, lon);
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
@@ -226,45 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Add event listener to the "Use My Location" button
 document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
-
-    locationButton.addEventListener('click', () => {
-        // Fetch location using IPGeolocation API
-        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch location data.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const lat = parseFloat(data.latitude);
-                const lon = parseFloat(data.longitude);
-
-                // Perform reverse geocoding to get accurate city name
-                const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
-
-                return fetch(reverseGeoUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to perform reverse geocoding.');
-                        }
-                        return response.json();
-                    })
-                    .then(geoData => {
-                        const city = geoData[0]?.name || data.city || 'Your Location';
-                        // Update weather, forecast, and traffic data
-                        getWeather(lat, lon, city);
-                        updateForecast(city);
-                        trafficMap.setCenter({ lat, lng: lon });
-                        trafficMap.setZoom(13);
-                        updateTrafficInfo(lat, lon);
-                    });
-            })
-            .catch(error => {
-                console.error('Error during location retrieval:', error);
-                alert('Failed to retrieve your location.');
-            });
-    });
 
     /* ==================== HERE Traffic Map ==================== */
     // Initialize HERE platform with your API key
