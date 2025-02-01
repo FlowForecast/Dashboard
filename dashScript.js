@@ -144,48 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* ==================== Forecast Function ==================== */
-    function updateForecast(city) {
-        const apiKeyOWM = '0a3ca98b38e84a407ded4d891b605c50'; // Ensure this matches above
-        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch forecast data');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const forecastContainer = document.getElementById('forecastContainer');
-                forecastContainer.innerHTML = ''; // Clear existing forecast
-
-                // Process and display forecast data
-                for (let i = 0; i < data.list.length; i += 8) { // Show one forecast every 24 hours
-                    const dayData = data.list[i];
-                    const date = new Date(dayData.dt * 1000);
-                    const dateString = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-                    const temp = dayData.main.temp;
-                    const description = dayData.weather[0].description;
-                    const icon = `https://openweathermap.org/img/wn/${dayData.weather[0].icon}.png`;
-
-                    const forecastCard = document.createElement('div');
-                    forecastCard.className = 'forecast-card';
-                    forecastCard.innerHTML = `
-                        <h4>${dateString}</h4>
-                        <img src="${icon}" alt="${description}" class="forecast-icon">
-                        <p>Temp: ${temp}C</p>
-                        <p>Description: ${description}</p>
-                    `;
-                    forecastContainer.appendChild(forecastCard);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching the forecast:', error);
-                alert('Failed to fetch forecast data. Please try again.');
-            });
-    }
-
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
     const locationButton = document.getElementById('locationButton');
@@ -203,42 +161,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     locationButton.addEventListener('click', () => {
-        // Fetch location using IPGeolocation API
-        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch location data.');
+        // Fetch location using browser's geolocation API
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Perform reverse geocoding to get the city name
+                    const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
+
+                    fetch(reverseGeoUrl)
+                        .then(response => response.json())
+                        .then(geoData => {
+                            const city = geoData[0]?.name || 'Your Location';
+                            // Update weather, forecast, and traffic data
+                            getWeather(lat, lon, city);
+                            updateForecast(city);
+                            trafficMap.setCenter({ lat, lng: lon });
+                            trafficMap.setZoom(13);
+                            updateTrafficInfo(lat, lon);
+                        })
+                        .catch(error => {
+                            console.error('Error during reverse geocoding:', error);
+                            alert('Failed to retrieve location data.');
+                        });
+                },
+                error => {
+                    console.error('Error getting location:', error);
+                    alert('Location permission denied or error fetching location.');
                 }
-                return response.json();
-            })
-            .then(data => {
-                const lat = parseFloat(data.latitude);
-                const lon = parseFloat(data.longitude);
-
-                // Perform reverse geocoding to get accurate city name
-                const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
-
-                return fetch(reverseGeoUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to perform reverse geocoding.');
-                        }
-                        return response.json();
-                    })
-                    .then(geoData => {
-                        const city = geoData[0]?.name || data.city || 'Your Location';
-                        // Update weather, forecast, and traffic data
-                        getWeather(lat, lon, city);
-                        updateForecast(city);
-                        trafficMap.setCenter({ lat, lng: lon });
-                        trafficMap.setZoom(13);
-                        updateTrafficInfo(lat, lon);
-                    });
-            })
-            .catch(error => {
-                console.error('Error during location retrieval:', error);
-                alert('Failed to retrieve your location.');
-            });
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
     });
 
     /* ==================== HERE Traffic Map ==================== */
@@ -248,21 +204,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const defaultLayers = platform.createDefaultLayers();
+    const trafficMap = new H.Map(document.getElementById('trafficMap'), defaultLayers.vector.normal.map, {
+        center: { lat: 52.5200, lng: 13.4050 },
+        zoom: 10
+    });
 
-    // Initialize HERE map on 'trafficMap' div
-    const trafficMap = new H.Map(
-        document.getElementById('trafficMap'),
-        defaultLayers.vector.normal.map, // Default map layer
-        {
-            zoom: 10,
-            center: { lat: 51.505, lng: -0.09 } // Default center
-        }
-    );
-
-    // Enable map events and behavior
-    const mapEvents = new H.mapevents.MapEvents(trafficMap);
-    const behavior = new H.mapevents.Behavior(mapEvents);
     const ui = H.ui.UI.createDefault(trafficMap, defaultLayers);
+    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(trafficMap));
+
+    function updateTrafficInfo(lat, lon) {
+        const trafficUrl = `https://traffic.ls.hereapi.com/traffic/6.2/incidents.json?apiKey=YOUR_HERE_API_KEY&bbox=${lat},${lon},${lat},${lon}`;
+        fetch(trafficUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Process traffic data and display on map
+                console.log(data);
+            })
+            .catch(error => console.error('Traffic data fetch error:', error));
+    }
 
     // Variable to hold the current traffic marker
     let trafficMarker = null;
