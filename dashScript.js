@@ -144,6 +144,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+        /* ==================== Forecast Function ==================== */
+    function updateForecast(city) {
+        const apiKeyOWM = '0a3ca98b38e84a407ded4d891b605c50'; // Ensure this matches above
+        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch forecast data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const forecastContainer = document.getElementById('forecastContainer');
+                forecastContainer.innerHTML = ''; // Clear existing forecast
+
+                // Process and display forecast data
+                for (let i = 0; i < data.list.length; i += 8) { // Show one forecast every 24 hours
+                    const dayData = data.list[i];
+                    const date = new Date(dayData.dt * 1000);
+                    const dateString = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                    const temp = dayData.main.temp;
+                    const description = dayData.weather[0].description;
+                    const icon = `https://openweathermap.org/img/wn/${dayData.weather[0].icon}.png`;
+
+                    const forecastCard = document.createElement('div');
+                    forecastCard.className = 'forecast-card';
+                    forecastCard.innerHTML = `
+                        <h4>${dateString}</h4>
+                        <img src="${icon}" alt="${description}" class="forecast-icon">
+                        <p>Temp: ${temp}C</p>
+                        <p>Description: ${description}</p>
+                    `;
+                    forecastContainer.appendChild(forecastCard);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching the forecast:', error);
+                alert('Failed to fetch forecast data. Please try again.');
+            });
+    }
+
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
     const locationButton = document.getElementById('locationButton');
