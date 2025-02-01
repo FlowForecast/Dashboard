@@ -207,18 +207,16 @@ document.addEventListener('DOMContentLoaded', () => {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
-            // Update the map with the user's location
-            map.setView([lat, lon], 13); // Zoom in closer to the user's location
-            L.marker([lat, lon]).addTo(map)
+            // Update the weather map with the user's location
+            weatherMap.setView([lat, lon], 13); // Use the correct map object, weatherMap
+            L.marker([lat, lon]).addTo(weatherMap)
                 .bindPopup('You are here!')
                 .openPopup();
 
             // Fetch weather and traffic data based on user's location
-            getWeather(lat, lon, city);
-            updateForecast(city);
-            trafficMap.setCenter({ lat, lng: lon });
-            trafficMap.setZoom(13);
-            updateTrafficInfo(lat, lon);
+            getWeather(lat, lon); // Call with lat, lon, no city name
+            updateForecast(''); // Update forecast without a city name
+            updateTrafficInfo(lat, lon); // Update traffic info using user's location
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
