@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     menuToggle.addEventListener('click', () => {
         mainNav.classList.toggle('show');
     });
-    
 
     /* ==================== Leaflet Weather Map ==================== */
     const weatherMap = L.map('weatherMap').setView([51.505, -0.09], 5); // Default view
@@ -145,48 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* ==================== Forecast Function ==================== */
-    function updateForecast(city) {
-        const apiKeyOWM = '0a3ca98b38e84a407ded4d891b605c50'; // Ensure this matches above
-        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch forecast data');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const forecastContainer = document.getElementById('forecastContainer');
-                forecastContainer.innerHTML = ''; // Clear existing forecast
-
-                // Process and display forecast data
-                for (let i = 0; i < data.list.length; i += 8) { // Show one forecast every 24 hours
-                    const dayData = data.list[i];
-                    const date = new Date(dayData.dt * 1000);
-                    const dateString = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-                    const temp = dayData.main.temp;
-                    const description = dayData.weather[0].description;
-                    const icon = `https://openweathermap.org/img/wn/${dayData.weather[0].icon}.png`;
-
-                    const forecastCard = document.createElement('div');
-                    forecastCard.className = 'forecast-card';
-                    forecastCard.innerHTML = `
-                        <h4>${dateString}</h4>
-                        <img src="${icon}" alt="${description}" class="forecast-icon">
-                        <p>Temp: ${temp}C</p>
-                        <p>Description: ${description}</p>
-                    `;
-                    forecastContainer.appendChild(forecastCard);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching the forecast:', error);
-                alert('Failed to fetch forecast data. Please try again.');
-            });
-    }
-
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
     const locationButton = document.getElementById('locationButton');
@@ -195,51 +152,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const city = document.getElementById('citySearch').value.trim();
         if (city) {
             fetchWeatherData(city);
-            updateForecast(city);
-            updateTrafficMap(city);
-            fetchLocalEvents(city);
         } else {
             alert('Please enter a city name.');
         }
     });
 
     locationButton.addEventListener('click', () => {
-        // Fetch location using IPGeolocation API
-        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch location data.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const lat = parseFloat(data.latitude);
-                const lon = parseFloat(data.longitude);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
                 // Perform reverse geocoding to get accurate city name
                 const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
 
-                return fetch(reverseGeoUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to perform reverse geocoding.');
-                        }
-                        return response.json();
-                    })
+                fetch(reverseGeoUrl)
+                    .then(response => response.json())
                     .then(geoData => {
-                        const city = geoData[0]?.name || data.city || 'Your Location';
-                        // Update weather, forecast, and traffic data
+                        const city = geoData[0]?.name || 'Your Location';
                         getWeather(lat, lon, city);
-                        updateForecast(city);
-                        trafficMap.setCenter({ lat, lng: lon });
-                        trafficMap.setZoom(13);
-                        updateTrafficInfo(lat, lon);
+                    })
+                    .catch(error => {
+                        console.error('Error during reverse geocoding:', error);
+                        alert('Failed to retrieve your location.');
                     });
-            })
-            .catch(error => {
-                console.error('Error during location retrieval:', error);
-                alert('Failed to retrieve your location.');
+            }, (error) => {
+                console.error('Error retrieving geolocation:', error);
+                alert('Geolocation permission denied or unavailable.');
             });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
     });
 
     /* ==================== HERE Traffic Map ==================== */
@@ -427,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
     /* ==================== Initial Load ==================== */
     // Optionally, load default weather and traffic data
     // For example, load data for a default city
@@ -446,43 +388,4 @@ window.addEventListener('scroll', function () {
     } else {
         header.classList.remove('scrolled');
     }
-});
-
-locationButton.addEventListener('click', () => {
-    // Fetch location using IPGeolocation API
-    fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch location data.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const lat = parseFloat(data.latitude);
-            const lon = parseFloat(data.longitude);
-
-            // Perform reverse geocoding to get an accurate city name
-            const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
-
-            return fetch(reverseGeoUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to perform reverse geocoding.');
-                    }
-                    return response.json();
-                })
-                .then(geoData => {
-                    const city = geoData[0]?.name || data.city || 'Your Location';
-                    // Update weather, forecast, and traffic data
-                    getWeather(lat, lon, city);
-                    updateForecast(city);
-                    trafficMap.setCenter({ lat, lng: lon });
-                    trafficMap.setZoom(13);
-                    updateTrafficInfo(lat, lon);
-                });
-        })
-        .catch(error => {
-            console.error('Error during location retrieval:', error);
-            alert('Failed to retrieve your location. Please try again.');
-        });
 });
