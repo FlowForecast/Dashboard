@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
 }).addTo(map);
 
-// OpenWeatherMap API key lkl
+// OpenWeatherMap API key
 var apiKey = '0a3ca98b38e84a407ded4d891b605c50';
 
 // Layers for precipitation, clouds, pressure, temperature, and wind
@@ -53,44 +53,86 @@ function getTrafficConditions(lat, lon) {
     });
 }
 
-// Modified function to include weather and traffic information
-function updateWeatherAndTraffic(city, lat, lon) {
-    // Update weather information
+// Function to get the weather information based on latitude and longitude
+function getWeatherData(lat, lon) {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`, function (data) {
-        document.getElementById('weatherCity').textContent = city;
-        document.getElementById('weatherCondition').textContent = `Weather: ${data.weather[0].description}`;
-        document.getElementById('weatherTemp').textContent = `Temperature: ${data.main.temp} °C`;
-        document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${data.main.feels_like} °C`;
+        var cityName = data.name; // Get the city name from the API response
+        var weatherCondition = data.weather[0].description;
+        var weatherTemp = data.main.temp;
+        var weatherFeelsLike = data.main.feels_like;
 
-        // Get traffic condition
+        // Update the city name and weather details in the HTML
+        document.getElementById('weatherCity').textContent = `City: ${cityName}`;
+        document.getElementById('weatherCondition').textContent = `Weather: ${weatherCondition}`;
+        document.getElementById('weatherTemp').textContent = `Temperature: ${weatherTemp} °C`;
+        document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${weatherFeelsLike} °C`;
+
+        // Get traffic information for the city
         getTrafficConditions(lat, lon);
+    }).fail(function () {
+        document.getElementById('weatherCity').textContent = 'City: N/A';
+        document.getElementById('weatherCondition').textContent = 'Weather: N/A';
+        document.getElementById('weatherTemp').textContent = 'Temperature: N/A';
+        document.getElementById('weatherFeelsLike').textContent = 'Feels Like: N/A';
     });
 }
 
-// Function to use geolocation
-function getLocation() {
+// Function to handle geolocation and update the map
+function useCurrentLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
-            // Center the map on the user's location
-            map.setView([lat, lon], 13);
+            // Update the map with the user's location
+            map.setView([lat, lon], 13); // Zoom in closer to the user's location
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup('You are here!')
+                .openPopup();
 
-            // Update weather and traffic info for the current location
-            updateWeatherAndTraffic("Your Location", lat, lon);
-        }, function() {
-            alert("Geolocation request denied or failed.");
+            // Fetch weather and traffic data based on user's location
+            getWeatherData(lat, lon);
+        }, function (error) {
+            alert("Geolocation failed: " + error.message);
         });
     } else {
         alert("Geolocation is not supported by this browser.");
     }
 }
 
-// Attach event listener for "Use My Location" button
-document.getElementById('locationButton').addEventListener('click', function() {
-    getLocation();
+// Add event listener to the "Use My Location" button
+document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
+
+
+// Search button functionality with weather and traffic update
+document.getElementById('searchButton').addEventListener('click', function () {
+    var city = document.getElementById('citySearch').value;
+
+    if (city) {
+        $.getJSON(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`, function (data) {
+            if (data && data.length > 0) {
+                var lat = data[0].lat;
+                var lon = data[0].lon;
+
+                // Update the map to the searched city's location
+                map.setView([lat, lon], 10);
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup(`${city}`)
+                    .openPopup();
+
+                // Update weather and traffic information
+                updateWeatherAndTraffic(city, lat, lon);
+            } else {
+                alert("City not found. Please try another city.");
+            }
+        }).fail(function () {
+            alert("Failed to retrieve city data.");
+        });
+    } else {
+        alert("Please enter a city.");
+    }
 });
+
 
 // Card functionality
 document.querySelectorAll('.read-more').forEach(button => {
