@@ -145,46 +145,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
         /* ==================== Forecast Function ==================== */
-    function updateForecast(city) {
-        const apiKeyOWM = '0a3ca98b38e84a407ded4d891b605c50'; // Ensure this matches above
-        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
+    function update5DayForecast(data) {
+    const forecastContainer = document.getElementById('forecastContainer');
+    // Clear previous forecast
+    forecastContainer.innerHTML = '';
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch forecast data');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const forecastContainer = document.getElementById('forecastContainer');
-                forecastContainer.innerHTML = ''; // Clear existing forecast
+    // Loop through each day (3-hour interval) to display 5-day forecast
+    for (let i = 0; i < 5; i++) {
+        const forecastData = data.list[i * 8]; // Get the forecast for each day (every 8th entry)
+        const forecastCard = document.createElement('div');
+        forecastCard.classList.add('forecast-card');
 
-                // Process and display forecast data
-                for (let i = 0; i < data.list.length; i += 8) { // Show one forecast every 24 hours
-                    const dayData = data.list[i];
-                    const date = new Date(dayData.dt * 1000);
-                    const dateString = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-                    const temp = dayData.main.temp;
-                    const description = dayData.weather[0].description;
-                    const icon = `https://openweathermap.org/img/wn/${dayData.weather[0].icon}.png`;
+        const day = new Date(forecastData.dt * 1000).toLocaleDateString(); // Convert timestamp to readable date
+        const temp = forecastData.main.temp.toFixed(1);
+        const description = forecastData.weather[0].description;
 
-                    const forecastCard = document.createElement('div');
-                    forecastCard.className = 'forecast-card';
-                    forecastCard.innerHTML = `
-                        <h4>${dateString}</h4>
-                        <img src="${icon}" alt="${description}" class="forecast-icon">
-                        <p>Temp: ${temp}C</p>
-                        <p>Description: ${description}</p>
-                    `;
-                    forecastContainer.appendChild(forecastCard);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching the forecast:', error);
-                alert('Failed to fetch forecast data. Please try again.');
-            });
+        forecastCard.innerHTML = `
+            <h4>Day ${i + 1} (${day})</h4>
+            <p>Temp: ${temp}°C</p>
+            <p>Description: ${description}</p>
+        `;
+        
+        forecastContainer.appendChild(forecastCard);
     }
+}
+
+function fetchWeatherData(city) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`City "${city}" not found`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateWeatherDetails(city, data);
+            weatherMap.setView([data.coord.lat, data.coord.lon], 10); // Center map to the city
+
+            // Fetch the 5-day forecast data
+            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${apiKeyOWM}`;
+            fetch(forecastUrl)
+                .then(response => response.json())
+                .then(forecastData => {
+                    update5DayForecast(forecastData);
+                })
+                .catch(error => {
+                    console.error('Error fetching 5-day forecast:', error);
+                    alert('Failed to fetch 5-day forecast. Please try again.');
+                });
+
+            // Remove existing marker if any
+            if (weatherMarker) {
+                weatherMap.removeLayer(weatherMarker);
+            }
+
+            // Add new marker
+            weatherMarker = L.marker([data.coord.lat, data.coord.lon]).addTo(weatherMap)
+                .bindPopup(`${city}`)
+                .openPopup();
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error);
+            alert(error.message);
+        });
+}
 
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
