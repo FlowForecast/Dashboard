@@ -105,6 +105,17 @@ document.getElementById('locationButton').addEventListener('click', useCurrentLo
 
 
 // Search button functionality with weather and traffic update
+function updateWeatherAndTraffic(city, lat, lon) {
+    // Get the weather data for the city
+    getWeatherData(lat, lon);
+
+    // Update the map with the city's location
+    map.setView([lat, lon], 10);
+    L.marker([lat, lon]).addTo(map)
+        .bindPopup(city)
+        .openPopup();
+}
+
 document.getElementById('searchButton').addEventListener('click', function () {
     var city = document.getElementById('citySearch').value;
 
@@ -114,13 +125,7 @@ document.getElementById('searchButton').addEventListener('click', function () {
                 var lat = data[0].lat;
                 var lon = data[0].lon;
 
-                // Update the map to the searched city's location
-                map.setView([lat, lon], 10);
-                L.marker([lat, lon]).addTo(map)
-                    .bindPopup(`${city}`)
-                    .openPopup();
-
-                // Update weather and traffic information
+                // Update the weather and traffic information for the city
                 updateWeatherAndTraffic(city, lat, lon);
             } else {
                 alert("City not found. Please try another city.");
@@ -132,6 +137,7 @@ document.getElementById('searchButton').addEventListener('click', function () {
         alert("Please enter a city.");
     }
 });
+
 
 
 // Card functionality
