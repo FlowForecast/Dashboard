@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="weatherStyle.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Dashboard</div>
+        <button class="menu-toggle">☰</button>
+        <nav class="main-nav">
+            <a href="#">Home</a>
+            <a href="#">Weather</a>
+            <a href="#">Traffic</a>
+            <a href="#">Local Events</a>
+            <a href="#">Insights</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <div class="welcome-text"><b>Weather Dashboard</b></div>
+            <div class="search-bar-container">
+                <input type="text" id="citySearch" placeholder="Search for a city...">
+                <button id="searchButton">Search</button>
+                <button id="locationButton">Use My Location</button>
+                <div class="note-text"><b>Note:</b> Using your location is most accurate for devices with GPS, like smartphones.</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div id="map" class="map"></div>
+            <div class="info-column">
+                <div class="cards-container">
+                    <div class="weather-card">
+                        <h2 id="cityName">City Name</h2>
+                        <p id="temperature">Temperature: --°C</p>
+                        <p id="feelsLike">Feels Like: --°C</p>
+                        <p id="description">Weather Description: --</p>
+                    </div>
+                    <div class="temperature-card">
+                        <h2>Temperature Information</h2>
+                        <img src="R:/Miko(College)/THESIS/Weather-Dashboard/images/high-temp.png" alt="high-temp Icon" id="icon">
+                        <p id="highTemperature">High Temperature: --°C</p><br>
+                        <img src="R:/Miko(College)/THESIS/Weather-Dashboard/images/low-temp.png" alt="low-temp Icon" id="icon">
+                        <p id="lowTemperature">Low Temperature: --°C</p>
+                    </div>
+                </div>
+                <div class="forecast">
+                    <h3>5-Day Forecast</h3>
+                    <div id="forecastContainer" class="forecast-container">
+                        <!-- Forecast cards will be inserted here -->
+                        <div class="forecast-card">
+                            <h4>Day 1</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 2</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 3</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 4</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 5</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlights">
+            <h3>Highlights</h3>
+            <div class="highlights-container">
+                <div class="highlight-card" id="windSpeed">
+                    <img src="images/wind.png" alt="Wind Icon" id="icon">
+                    <h4>Wind Speed</h4>
+                    <p>-- km/h</p>
+                </div>
+                <div class="highlight-card" id="sunrise">
+                    <img src="images/sunrise.png" alt="Sunrise Icon" id="icon">
+                    <h4>Sunrise</h4>
+                    <p>--</p>
+                </div>
+                <div class="highlight-card" id="sunset">
+                    <img src="images/sunset.png" alt="Sunset Icon" id="icon">
+                    <h4>Sunset</h4>
+                    <p>--</p>
+                </div>
+                <div class="highlight-card" id="humidity">
+                    <img src="images/humidity.png" alt="Humidity Icon" id="icon">
+                    <h4>Humidity</h4>
+                    <p>--% (Normal)</p>
+                </div>
+                <div class="highlight-card" id="visibility">
+                    <img src="images/visibility.png" alt="Visibility Icon" id="icon">
+                    <h4>Visibility</h4>
+                    <p>-- km (Normal)</p>
+                </div>
+                <div class="highlight-card" id="pressure">
+                    <img src="images/pressure.png" alt="Pressure Icon" id="icon">
+                    <h4>Pressure</h4>
+                    <p>-- hPa (Normal)</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <br>
+    <footer>
+        <div class="footer-section">
+            <p>Special Thanks<br>Shecodes, IconFinder</p>
+            <p>Follow Us<br>Facebook, Twitter</p>
+            <p>Contact Us<br>loremipsum@business.com</p>
+        </div>
+
+        <div class="footer-bottom">
+            <p><a href="#about-us">About Us</a></p>|
+            <p>&copy; 2024 YourCompany</p>
+        </div>
+    </footer>
+
+    <script src="weatherScript.js"></script>
+</body>
+</html>

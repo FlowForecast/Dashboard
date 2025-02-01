@@ -1,0 +1,321 @@
+﻿body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e4eaf2;
+    color: #333;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1500;
+    background-color: transparent;
+    color: white;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease-in-out;
+}
+
+    /* Add this class to apply the background color when scrolled */
+    header.scrolled {
+        background-color: #3b3b3b;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    header .logo {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+.menu-toggle {
+    display: none;
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 1em;
+}
+
+    .main-nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        position: relative;
+    }
+
+        .main-nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+footer {
+    background-color: #fff; /* Adjust color as needed */
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-section {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+    .footer-section p {
+        margin: 0;
+    }
+
+.footer-bottom {
+    border-top: ridge;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+    .footer-bottom p {
+        margin: 0;
+    }
+
+    .footer-bottom a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+    }
+
+        .footer-bottom a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: black;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .footer-bottom a:hover::after {
+            width: 100%;
+        }
+
+.hero-section {
+    background-image: url('R:/Miko(College)/THESIS/Weather-Dashboard/images/le-bg.webp'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 450px; /* Adjust height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+main {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.note-text {
+    background-color: #ffeb3b;
+    color: black;
+    padding: 16px;
+}
+
+.welcome-text {
+    font-size: 2em; /* Adjust font size as needed */
+    font-weight: bold;
+    margin-bottom: 20px; /* Space between the welcome text and search bar */
+}
+
+.search-bar-container {
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    animation: slideInFromTop 1.5s ease-in-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.search-bar-container input[type="text"] {
+    padding: 0.5em;
+    font-size: 1em;
+    width: 80%;
+    max-width: 400px;
+    margin-bottom: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+    .search-bar-container input[type="text"]:focus {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+.search-bar-container button {
+    padding: 0.5em 1em;
+    font-size: 1em;
+    color: white;
+    background-color: #3b3b3b;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+        .search-bar-container button:hover {
+            background-color: #595959;
+        }
+
+    .search-bar-container p {
+        margin-top: 10px;
+        color: white; /* Text color for note */
+    }
+
+.events-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.event-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    width: 80%;
+    max-width: 600px;
+    text-align: left;
+}
+
+    .event-card h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+    }
+
+    .event-card p {
+        margin: 5px 0;
+    }
+
+    .event-card .event-details {
+        font-size: 0.9em;
+        color: #555;
+    }
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #3b3b3b;
+        position: absolute;
+        top: 60px;
+        left: 0;
+    }
+
+        .main-nav a {
+            padding: 1em;
+            display: block;
+            text-align: center;
+        }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .main-nav.show {
+        display: flex;
+    }
+
+    .hero-section {
+        height: 400px;
+    }
+
+    .footer-section {
+        flex-direction: column; /* Stack the footer items vertically */
+        align-items: center; /* Center align the items */
+    }
+
+        .footer-section p {
+            margin-bottom: 10px; /* Add space between the items */
+        }
+}
+
+@media (max-width: 480px) {
+    .welcome-text {
+        font-size: 1.5em;
+    }
+
+    .search-bar-container {
+        width: 100%;
+    }
+
+        .search-bar-container input[type="text"] {
+            font-size: 0.9em;
+        }
+
+        .search-bar-container button {
+            font-size: 0.9em;
+        }
+}
+
+@media (max-width: 320px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}

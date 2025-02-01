@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Template</title>
+    <link rel="stylesheet" href="lestyle.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Dashboard</div>
+        <button class="menu-toggle">☰</button>
+        <nav class="main-nav">
+            <a href="#">Home</a>
+            <a href="#">Weather</a>
+            <a href="#">Traffic</a>
+            <a href="#">Local Events</a>
+            <a href="#">Insights</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <div class="welcome-text"><b>local Events Dashboard</b></div>
+            <div class="search-bar-container">
+                <input type="text" id="citySearch" placeholder="Search for a city...">
+                <button id="searchButton">Search</button>
+                <button id="locationButton">Use My Location</button>
+                <div class="note-text"><b>Note:</b> Using your location is most accurate for devices with GPS, like smartphones.</div>
+            </div>
+        </div>
+
+        <div id="eventsSection" class="events-section">
+            <div class="event-card">
+                <h2>Display Local Events</h2>
+                <p id="eventsDescription">Enter a city name or use your location to see the local events happening near you.</p>
+            </div>
+            <!-- Event cards will be injected here -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-section">
+            <p>Special Thanks<br>Shecodes, IconFinder</p>
+            <p>Follow Us<br>Facebook, Twitter</p>
+            <p>Contact Us<br>loremipsum@business.com</p>
+        </div>
+
+        <div class="footer-bottom">
+            <p><a href="#about-us">About Us</a></p>|
+            <p>&copy; 2024 YourCompany</p>
+        </div>
+    </footer>
+
+        <script src="lescript.js"></script>
+</body>
+</html>

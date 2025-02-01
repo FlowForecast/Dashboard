@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Dashboard</title>
+    <link rel="stylesheet" href="trafficstyle.css">
+    <!-- Add HERE Maps script -->
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-pano.js"></script>
+
+</head>
+<body>
+
+    <header>
+        <div class="logo">Dashboard</div>
+        <button class="menu-toggle">☰</button>
+        <nav class="main-nav">
+            <a href="#">Home</a>
+            <a href="#">Weather</a>
+            <a href="#">Traffic</a>
+            <a href="#">Local Events</a>
+            <a href="#">Insights</a>
+        </nav>
+    </header>
+    <main>
+        <div class="hero-section">
+            <div class="welcome-text"><b>Traffic Dashboard</b></div>
+            <div class="search-bar-container">
+                <input type="text" id="citySearch" placeholder="Search for a city...">
+                    <button id="searchButton">Search</button>
+                    <button id="locationButton">Use My Location</button>
+                <div class="note-text"><b>Note:</b> Using your location is most accurate for devices with GPS, like smartphones.</div>
+            </div>
+        </div>
+    </main>
+
+    <div class="dashboard-container">
+        <div id="map"></div>
+        <div class="traffic-info-container">
+            <div class="traffic-card">
+                <h3>Traffic Information</h3>
+            </div>
+            <div id="trafficInfo" class="traffic-card1">
+                <p><b>Current Speed:</b> <span id="currentSpeed">-- km/h</span></p>
+                <p><b>Free Flow Speed:</b> <span id="freeFlowSpeed">-- km/h</span></p>
+                <p><b>Confidence:</b> <span id="confidence">-- %</span></p>
+                <p><b>Traffic Condition:</b> <span id="trafficCondition">-- Traffic</span></p>
+                <p style="border-top: ridge; padding: 1em; text-align: center;"><b>Note: If Map encountered a bug please refresh the browser</b></p>
+            </div>
+        </div>
+    </div>
+
+        <!-- Legend for traffic conditions -->
+        <center><h3>Traffic Legend</h3></center>
+        <div class="traffic-legend">
+            <div><span class="legend-color major-delay"></span> Major Delay</div>
+            <div><span class="legend-color minor-delay"></span> Minor Delay</div>
+            <div><span class="legend-color no-delay"></span> No Delay</div>
+            <div><span class="legend-color closed"></span> Closed</div>
+        </div>
+    <br>
+    <footer>
+        <div class="footer-section">
+            <p>Special Thanks<br>Shecodes, IconFinder</p>
+            <p>Follow Us<br>Facebook, Twitter</p>
+            <p>Contact Us<br>loremipsum@business.com</p>
+        </div>
+
+        <div class="footer-bottom">
+            <p><a href="#about-us">About Us</a></p>|
+            <p>&copy; 2024 YourCompany</p>
+        </div>
+    </footer>
+
+    <script src="trafficscript.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="dashStyle.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-pano.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><img src="images/logo1.png"></div>
+        <button class="menu-toggle">☰</button>
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="#">Dashboard</a>
+            <a href="insight.html">Insights</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <div class="welcome-text"><b>Dashboard For Environmental Insights</b></div>
+            <div class="search-bar-container">
+                <input type="text" id="citySearch" placeholder="Search for a city...">
+                <button id="searchButton">Search</button>
+                <button id="locationButton">Use My Location</button>
+                <div class="note-text"><b>Note:</b> Using your location is most accurate for devices with GPS, like smartphones.</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div id="weatherMap" class="map"></div>
+            <div class="info-column">
+                <div class="cards-container">
+                    <div class="weather-card">
+                        <h2 id="cityName">City Name</h2>
+                        <p id="temperature">Temperature: --°C</p>
+                        <p id="feelsLike">Feels Like: --°C</p>
+                        <p id="description">Weather Description: --</p>
+                    </div>
+                    <div class="temperature-card">
+                        <h2>Temperature Information</h2>
+                        <p id="highTemperature">High Temperature: --°C</p><br>
+                        <p id="lowTemperature">Low Temperature: --°C</p>
+                    </div>
+                </div>
+                <div class="forecast">
+                    <h3>5-Day Forecast</h3>
+                    <div id="forecastContainer" class="forecast-container">
+                        <!-- Forecast cards will be inserted here -->
+                        <div class="forecast-card">
+                            <h4>Day 1</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 2</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 3</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 4</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                        <div class="forecast-card">
+                            <h4>Day 5</h4>
+                            <p>Temp: --°C</p>
+                            <p>Description: --</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlights">
+            <h3>Highlights</h3>
+            <div class="highlights-container">
+                <div class="highlight-card" id="windSpeed">
+                    <img src="images/wind.png" alt="Wind Icon" id="icon">
+                    <h4>Wind Speed</h4>
+                    <p>-- km/h</p>
+                </div>
+                <div class="highlight-card" id="sunrise">
+                    <img src="images/sunrise.png" alt="Sunrise Icon" id="icon">
+                    <h4>Sunrise</h4>
+                    <p>--</p>
+                </div>
+                <div class="highlight-card" id="sunset">
+                    <img src="images/sunset.png" alt="Sunset Icon" id="icon">
+                    <h4>Sunset</h4>
+                    <p>--</p>
+                </div>
+                <div class="highlight-card" id="humidity">
+                    <img src="images/humidity.png" alt="Humidity Icon" id="icon">
+                    <h4>Humidity</h4>
+                    <p>--% (Normal)</p>
+                </div>
+                <div class="highlight-card" id="visibility">
+                    <img src="images/visibility.png" alt="Visibility Icon" id="icon">
+                    <h4>Visibility</h4>
+                    <p>-- km (Normal)</p>
+                </div>
+                <div class="highlight-card" id="pressure">
+                    <img src="images/pressure.png" alt="Pressure Icon" id="icon">
+                    <h4>Pressure</h4>
+                    <p>-- hPa (Normal)</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <br>
+
+    <div class="dashboard-container">
+        <div id="trafficMap"></div>
+        <div class="traffic-info-container">
+            <div class="traffic-card">
+                <h3>Traffic Information</h3>
+            </div>
+            <div id="trafficInfo" class="traffic-card1">
+                <p><b>Current Speed:</b> <span id="currentSpeed">-- km/h</span></p>
+                <p><b>Free Flow Speed:</b> <span id="freeFlowSpeed">-- km/h</span></p>
+                <p><b>Confidence:</b> <span id="confidence">-- %</span></p>
+                <p><b>Traffic Condition:</b> <span id="trafficCondition">-- Traffic</span></p>
+                <p style="border-top: ridge; padding: 1em; text-align: center;"><b>Note: If Map encountered a bug please refresh the browser</b></p>
+            </div>
+            <center>
+            <div class="traffic-card"><h3>Traffic Legend</h3></div></center>
+            <div class="traffic-legend">
+                <div><span class="legend-color major-delay"></span> Major Delay</div>
+                <div><span class="legend-color minor-delay"></span> Minor Delay</div>
+                <div><span class="legend-color no-delay"></span> No Delay</div>
+                <div><span class="legend-color closed"></span> Closed</div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div id="eventsSection" class="events-section">
+        <div class="event-card">
+            <h2>Display Local Events</h2>
+            <p id="eventsDescription">Enter a city name or use your location to see the local events happening near you.</p>
+        </div>
+        <!-- Event cards will be injected here -->
+    </div>
+    <br>
+    <footer>
+        <div class="footer-section">
+            <p>Special Thanks<br>Shecodes, IconFinder</p>
+            <p>Follow Us<br>Facebook, Twitter</p>
+            <p>Contact Us<br>loremipsum@business.com</p>
+        </div>
+
+        <div class="footer-bottom">
+            <p><a href="about.html">About Us</a></p>|
+            <p>&copy; 2024 YourCompany</p>
+        </div>
+    </footer>
+
+    <script src="dashScript.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Template</title>
+    <link rel="stylesheet" href="mystyle.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- jQuery (for simplicity in making API requests) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><img src="images/logo1.png"></div>
+        <button class="menu-toggle">☰</button>
+        <nav class="main-nav">
+            <a href="#">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="insight.html">Insights</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <div class="text"><br><br>
+                <div class="welcome-text">Provide you a World Wide Forecast</div>
+                <div class="search-bar-container">
+                    <input type="text" id="citySearch" placeholder="Search for a city...">
+                    <button id="searchButton">Search</button>
+                    <button id="locationButton">Use My Location</button>
+                    <div class="note-text"><b>Note:</b> Using your location is most accurate for devices with GPS, like smartphones.</div>
+                </div>
+            </div>
+        </div>
+        <div class="content-wrapper">
+            <!-- Left Section: Map -->
+            <div class="map-container">
+                <h2>Interactive Map</h2>
+                <div id="map"></div>
+
+                <h2>City Condition</h2>
+                <div class="city-info">
+                    <div class="city-card">
+                        <h3 id="weatherCity">City Name</h3>
+                        <p id="weatherCondition">Weather: --</p>
+                        <p id="weatherTemp">Temperature: -- °C</p>
+                        <p id="weatherFeelsLike">Feels Like: -- °C</p>
+                        <p id="trafficCondition">Traffic Condition: --</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section: Insights Cards -->
+            <div class="insights-container">
+                <h2>Insights</h2>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Clouds</h3>
+                        <p>Little to no shades Means Clear, Sunny Skies - Denser shades Means cooler, overcast skies</p>
+                        <p class="card-content">Cloud coverage affects temperature, visibility, and weather conditions. Denser clouds result in cooler, overcast skies, while minimal clouds lead to clear, sunny weather. Displayed in shades of white and gray, cloud data helps predict storms and temperature changes, crucial for aviation and outdoor planning.</p>
+                        <button class="read-more">Read More</button>
+                    </div>
+                    <div class="card">
+                        <h3>Precipitation</h3>
+                        <div class="card-content3">
+                            <span class="light">Light</span>
+                            <span class="heavy">Heavy</span>
+                        </div>
+                        <br>
+                        <p class="insights-text">Precipitation reflects the amount of water falling as rain, snow, or hail, influencing flood risks, storm intensity, and droughts. Low levels are shown in light colors, while heavy precipitation uses darker shades. Tracking this data helps with disaster preparedness, agriculture planning, and water resource management.</p>
+                        <button class="read-more">Read More</button>
+                    </div>
+                    <div class="card">
+                        <h3>Temperature</h3>
+                        <div class="card-content1">
+                            <span class="cold">Cold</span>
+                            <span class="hot">Hot</span>
+                        </div>
+                        <br>
+                        <p class="insights-text">
+                            •Cold temperatures are represented by shades of blue.<br>
+                            •Moderate temperatures are represented by shades of green and yellow.<br>
+                            •Hot temperatures are represented by shades of orange and red.
+                        </p>
+                        <button class="read-more">Read More</button>
+                    </div>
+                    <div class="card">
+                        <h3>Wind</h3>
+                        <div class="card-content4">
+                            <span class="low">Low</span>
+                            <span class="high">High</span>
+                        </div>
+                        <br>
+                        <p class="insights-text">Wind impacts temperature, humidity, and weather patterns, with strong winds often signaling storms or cold fronts. Represented by color gradients on maps, lighter shades indicate calm winds, and darker colors show stronger gusts. Wind data is essential for safe travel, outdoor activities, and tracking weather system movements.</p>
+                        <button class="read-more">Read More</button>
+                    </div>
+                    <div class="card">
+                        <h3>Pressure</h3>
+                        <div class="card-content2">
+                            <span class="low-pressure">Low</span>
+                            <span class="high-pressure">High</span>
+                        </div>
+                        <br>
+                        <p class="insights-text">
+                            •Low pressure (associated with storms, rain, or bad weather) tends to be shown in blue/purple tones.<br>
+                            •High pressure (associated with clear skies, fair weather) is shown in yellow/orange/red tones.
+                        </p>
+                        <button class="read-more">Read More</button>
+                    </div>
+                </div>
+
+                <!-- Navigation Button -->
+                <div class="navigation-button">
+                    <button id="navigateButton1" onclick="location.href='insight.html'">For Additional Details</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper1">
+            <!-- Left Section: Additional Info Card -->
+            <div class="major-section">
+                <h2>Major Cities Forecast</h2>
+                <div class="forecast-carousel">
+                    <button class="prev">&#10094;</button>
+                    <div class="forecast-container">
+                        <div class="forecast-cards">
+                            <div class="card1" id="card-Manila">
+                                <h3>Manila</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-NewYork">
+                                <h3>New York</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-HongKong">
+                                <h3>Hong Kong</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Paris">
+                                <h3>Paris</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Mexico">
+                                <h3>Mexico</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Mumbai">
+                                <h3>Mumbai</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Cairo">
+                                <h3>Cairo</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-London">
+                                <h3>London</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-BuenosAires">
+                                <h3>Buenos Aires</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Istanbul">
+                                <h3>Istanbul</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-RioDeJaneiro">
+                                <h3>Rio De Janeiro</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                            <div class="card1" id="card-Moscow">
+                                <h3>Moscow</h3>
+                                <p>Weather: --</p>
+                                <p>Temperature: -- °C</p>
+                                <p>Traffic: --</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="next">&#10095;</button>
+                </div>
+            </div>
+            <!-- Right Section: Major City Forecast -->
+            <h2 class="disc-text">Discover</h2>
+            <div class="disc-section">
+                <div class="card2">
+                    <h3>Weather Dashboard</h3>
+                    <p>Introducing Real-Time Accurate Weather forecasting. With Current Weather, 5 day Weather Forecast, and Highligts to be ready when travelling</p>
+                </div><br>
+                <div class="card2">
+                    <h3>Traffic Dashboard</h3>
+                    <p>Introducing Real-Time Accurate Traffic forecasting. With Traffic Information that you may find useful if there is heavy traffic</p>
+                </div><br>
+                <div class="card2">
+                    <h3>Local Events Dashboard</h3>
+                    <p>Introducing Real-Time Accurate Local Events forecasting. To keep track on the events of the city.</p>
+                </div>
+            </div>
+            <div class="navigation-button">
+                <button id="navigateButton" onclick="location.href='dashboard.html'">Go to Dashboard</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-section">
+            <p>Special Thanks<br>Shecodes, IconFinder</p>
+            <p>Follow Us<br>Facebook, Twitter</p>
+            <p>Contact Us<br>loremipsum@business.com</p>
+        </div>
+
+        <div class="footer-bottom">
+            <p><a href="about.html">About Us</a></p>|
+            <p>&copy; 2024 YourCompany</p>
+        </div>
+    </footer>
+
+    <script src="myscript.js"></script>
+</body>
+</html>

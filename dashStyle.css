@@ -1,0 +1,708 @@
+﻿body {
+    margin: 0;
+    font-family: Cambria, Calibri;
+    background: #e4eaf2;
+    color: #333;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1500;
+    background-color: #1C4E80;
+    color: white;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.logo img {
+    margin-left: 10px;
+    width: 150px;
+    height: auto;
+}
+
+.menu-toggle {
+    display: none;
+    background-color: #1C4E80;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+    .menu-toggle:hover {
+        background-color: #1C4E80;
+    }
+
+
+.main-nav {
+    display: flex;
+    gap: 1em;
+}
+
+    .main-nav a {
+        right: 1em;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        position: relative;
+    }
+
+        .main-nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+.hero-section {
+    background-image: url(images/hero-img1.jpg);
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 500px; /* Adjust height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+main {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.note-text {
+    color: black;
+    padding: 16px;
+}
+
+.welcome-text {
+    font-size: 2em; /* Adjust font size as needed */
+    font-weight: bold;
+    margin-bottom: 20px; /* Space between the welcome text and search bar */
+}
+
+.search-bar-container {
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    animation: slideInFromTop 1.5s ease-in-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+    .search-bar-container input[type="text"] {
+        padding: 0.5em;
+        font-size: 1em;
+        width: 80%;
+        max-width: 400px;
+        margin-bottom: 1em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+        .search-bar-container input[type="text"]:focus {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+
+.search-bar-container button {
+    padding: 0.5em 1em;
+    font-size: 1em;
+    color: white;
+    background-color: #1C4E80;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .search-bar-container button:hover {
+        background-color: #0056b3;
+    }
+
+    .search-bar-container p {
+        margin-top: 10px;
+        color: white; /* Text color for note */
+    }
+
+.dashboard {
+    display: flex;
+    align-items: flex-start;
+    width: 94.5%;
+    margin: 20px;
+    gap: 20px;
+}
+
+.map {
+    height: 520px;
+    width: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 1.5s ease-in-out;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    animation: slideInFromLeft 1.5s ease-in-out;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.cards-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Added to handle wrapping on smaller screens */
+}
+
+.weather-card, .temperature-card {
+    background: #fff;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .weather-card:hover, .temperature-card:hover {
+        transform: translateY(-10px);
+    }
+
+.weather-card {
+    flex: 1;
+}
+
+.temperature-card {
+    flex: 1;
+    text-align: center;
+}
+
+.temperature-card p {
+    display: inline-block;
+}
+
+.forecast {
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .forecast h3 {
+        margin-top: 0;
+    }
+
+.forecast-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+    gap: 10px; /* Adjust gap as needed */
+    justify-content: center; /* Center cards within container */
+}
+
+.forecast-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 100%;
+    max-width: 150px; /* Reduced max-width for better fit on small screens */
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+    .forecast-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .forecast-card img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .forecast-card p {
+        margin: 5px 0;
+    }
+
+footer {
+    background-color: #F1F1F1; /* Adjust color as needed */
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-section {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+    .footer-section p {
+        margin: 0;
+    }
+
+.footer-bottom {
+    border-top: ridge;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+    .footer-bottom p {
+        margin: 0;
+    }
+
+    .footer-bottom a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+    }
+
+        .footer-bottom a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: black;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .footer-bottom a:hover::after {
+            width: 100%;
+        }
+
+.highlights {
+    background: #fff;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 94.5%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: slideInFromBottom 1.5s ease-in-out;
+}
+
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.highlights-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.highlight-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+    .highlight-card:hover {
+        transform: translateY(-10px);
+    }
+
+
+    .highlight-card h4 {
+        margin-top: 0;
+    }
+
+    /* Add CSS for the icons */
+    .highlight-card img {
+        width: 30px;
+        height: 30px;
+        margin-bottom: 5px;
+    }
+
+.highlights-container h4 {
+    display: inline-block;
+}
+
+#icon {
+    margin-bottom: -9px;
+}
+
+/* Traffic Style */
+#trafficMap {
+    width: 50%;
+    height: 500px;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 1.5s ease-in-out;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.dashboard-container {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+.traffic-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    gap: 10px; /* Add some space between the cards */
+}
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.traffic-card1 {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideInFromLeft 1.5s ease-in-out;
+}
+
+.traffic-card {
+    text-align: left;
+    background-color: white;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-left: solid;
+    border-left-color: blue;
+    animation: slideInFromLeft 1.5s ease-in-out;
+}
+
+    .traffic-card1 p {
+        margin-bottom: 19px;
+    }
+
+.traffic-legend {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    width: 95%;
+    font-size: 1em;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+    animation: slideInFromLeft 1.5s ease-in-out;
+}
+
+@media (max-width: 1366px) {
+    .traffic-legend{
+        width: 93%;
+    }
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 50%;
+}
+
+.major-delay {
+    border-style: groove;
+    background-color: orangered; /* Color for Major Delay */
+}
+
+.minor-delay {
+    border-style: groove;
+    background-color: yellow; /* Color for Minor Delay */
+}
+
+.no-delay {
+    border-style: groove;
+    background-color: white; /* Color for No Delay */
+}
+
+.closed {
+    border-style: groove;
+    background-color: gray; /* Color for Closed */
+}
+
+/* Local Events Style */
+.events-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.event-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    text-align: left;
+}
+
+    .event-card h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+    }
+
+    .event-card p {
+        margin: 5px 0;
+    }
+
+    .event-card .event-details {
+        font-size: 0.9em;
+        color: #555;
+    }
+
+/* Media Queries */
+@media (max-width: 1440px) {
+    .traffic-legend {
+        width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #1C4E80;
+        position: absolute;
+        top: 80px; /* Adjust based on header height */
+        left: 0;
+    }
+
+        .main-nav.show {
+            display: flex;
+        }
+
+        .main-nav a {
+            left: 3px;
+            padding: 1em;
+            display: block;
+            text-align: center;
+        }
+
+    .menu-toggle {
+        display: block;
+    }
+    
+    .hero-section {
+        height: 450px;
+    }
+
+    .dashboard {
+        flex-direction: column;
+        width: 100%;
+        margin: auto;
+        align-items: center;
+    }
+
+    .map {
+        margin-top: 10px;
+        height: 300px; /* Adjust height for smaller screens */
+        width: 100%;
+    }
+
+    .cards-container {
+        width: 100%;
+        
+    }
+
+    .temperature-card {
+        margin: auto;
+    }
+
+    .forecast {
+        margin: auto;
+    }
+
+    .footer-section {
+        flex-direction: column; /* Stack the footer items vertically */
+        align-items: center; /* Center align the items */
+    }
+
+        .footer-section p {
+            margin-bottom: 10px; /* Add space between the items */
+        }
+
+    /* Traffic */
+    .dashboard-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .traffic-info-container {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    #trafficMap {
+        width: 100%;
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-text {
+        font-size: 1.5em;
+    }
+
+    .search-bar-container {
+        width: 100%;
+    }
+
+        .search-bar-container input[type="text"] {
+            font-size: 0.9em;
+        }
+
+        .search-bar-container button {
+            font-size: 0.9em;
+        }
+
+    .forecast {
+        max-width: 79%;
+        margin: auto;
+    }
+
+    .forecast-card {
+        max-width: 120px; /* Adjusted for better fit */
+    }
+
+    /* Traffic */
+    .dashboard-container {
+        display: block;
+    }
+
+    #trafficMap {
+        width: 100%;
+        height: 300px;
+    }
+
+    .traffic-card {
+        width: auto;
+    }
+
+    .traffic-legend {
+        width: auto;
+    }
+}
+
+@media (max-width: 320px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+
+}
+
