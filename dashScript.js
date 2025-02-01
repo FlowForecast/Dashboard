@@ -188,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ==================== Search and Location Button Event Listeners ==================== */
     const searchButton = document.getElementById('searchButton');
-    const locationButton = document.getElementById('locationButton');
 
     searchButton.addEventListener('click', () => {
         const city = document.getElementById('citySearch').value.trim();
