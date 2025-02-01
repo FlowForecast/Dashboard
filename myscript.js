@@ -32,8 +32,6 @@ precipitationLayer.addTo(map);
 
 // TomTom Traffic API key
 var tomtomApiKey = 'a3QDSH5n7djQK1sLSjglAJVZPNNxOjH6';
-// OpenWeatherMap API key
-var apiKey = '0a3ca98b38e84a407ded4d891b605c50';
 
 // Function to get traffic conditions
 function getTrafficConditions(lat, lon) {
@@ -60,76 +58,38 @@ function updateWeatherAndTraffic(city, lat, lon) {
     // Update weather information
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`, function (data) {
         document.getElementById('weatherCity').textContent = city;
-        document.getElementById('weatherTemp').textContent = `Temperature: ${data.main.temp} C`;
-        document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${data.main.feels_like} C`;
         document.getElementById('weatherCondition').textContent = `Weather: ${data.weather[0].description}`;
+        document.getElementById('weatherTemp').textContent = `Temperature: ${data.main.temp} °C`;
+        document.getElementById('weatherFeelsLike').textContent = `Feels Like: ${data.main.feels_like} °C`;
+
+        // Get traffic condition
+        getTrafficConditions(lat, lon);
     });
-
-    // Get traffic conditions
-    getTrafficConditions(lat, lon);
 }
 
-// Get user's precise location
-var geoApiKey = 'b210b7b34c19429891fe3554d9a60476'; // IPGeolocation
-
-function getUserLocation() {
+// Function to use geolocation
+function getLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                updateWeatherAndTraffic("Your Location", lat, lon);
-            },
-            function (error) {
-                console.warn("Geolocation error:", error);
-                fallbackToIPGeolocation(); // Fallback if denied
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            // Center the map on the user's location
+            map.setView([lat, lon], 13);
+
+            // Update weather and traffic info for the current location
+            updateWeatherAndTraffic("Your Location", lat, lon);
+        }, function() {
+            alert("Geolocation request denied or failed.");
+        });
     } else {
-        alert("Geolocation is not supported by your browser.");
-        fallbackToIPGeolocation();
+        alert("Geolocation is not supported by this browser.");
     }
 }
 
-// Get location using IP (fallback)
-function fallbackToIPGeolocation() {
-    $.getJSON(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoApiKey}`)
-        .done(function (data) {
-            updateWeatherAndTraffic(data.city || "Unknown Location", data.latitude, data.longitude);
-        })
-        .fail(function () {
-            alert("Failed to get location data.");
-        });
-}
-
-// Search button functionality with weather and traffic update
-document.getElementById('searchButton').addEventListener('click', function () {
-    var city = document.getElementById('citySearch').value;
-
-    if (city) {
-        $.getJSON(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`, function (data) {
-            if (data && data.length > 0) {
-                var lat = data[0].lat;
-                var lon = data[0].lon;
-
-                // Update the map to the searched city's location
-                map.setView([lat, lon], 10);
-                L.marker([lat, lon]).addTo(map)
-                    .bindPopup(`${city}`)
-                    .openPopup();
-
-                // Update weather and traffic information
-                updateWeatherAndTraffic(city, lat, lon);
-            } else {
-                alert("City not found. Please try another city.");
-            }
-        }).fail(function () {
-            alert("Failed to retrieve city data.");
-        });
-    } else {
-        alert("Please enter a city.");
-    }
+// Attach event listener for "Use My Location" button
+document.getElementById('locationButton').addEventListener('click', function() {
+    getLocation();
 });
 
 // Card functionality
