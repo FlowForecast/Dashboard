@@ -203,35 +203,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     locationButton.addEventListener('click', () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
+        // Fetch location using IPGeolocation API
+        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch location data.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const lat = parseFloat(data.latitude);
+                const lon = parseFloat(data.longitude);
 
                 // Perform reverse geocoding to get accurate city name
                 const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
 
-                fetch(reverseGeoUrl)
-                    .then(response => response.json())
+                return fetch(reverseGeoUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to perform reverse geocoding.');
+                        }
+                        return response.json();
+                    })
                     .then(geoData => {
-                        const city = geoData[0]?.name || 'Your Location';
+                        const city = geoData[0]?.name || data.city || 'Your Location';
+                        // Update weather, forecast, and traffic data
                         getWeather(lat, lon, city);
                         updateForecast(city);
                         trafficMap.setCenter({ lat, lng: lon });
                         trafficMap.setZoom(13);
                         updateTrafficInfo(lat, lon);
-                    })
-                    .catch(error => {
-                        console.error('Error during reverse geocoding:', error);
-                        alert('Failed to retrieve your location.');
+
+                        document.querySelector(".dashboard").scrollIntoView({ behavior: "smooth" });
                     });
-            }, (error) => {
-                console.error('Error retrieving geolocation:', error);
-                alert('Geolocation permission denied or unavailable.');
+                    
+            })
+            
+            .catch(error => {
+                console.error('Error during location retrieval:', error);
+                alert('Failed to retrieve your location.');
             });
-        } else {
-            alert('Geolocation is not supported by this browser.');
-        }
     });
 
     /* ==================== HERE Traffic Map ==================== */
@@ -418,8 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
-
-
     /* ==================== Initial Load ==================== */
     // Optionally, load default weather and traffic data
     // For example, load data for a default city
@@ -428,7 +437,85 @@ document.addEventListener('DOMContentLoaded', () => {
     updateForecast(defaultCity);
     updateTrafficMap(defaultCity);
     fetchLocalEvents(defaultCity);
+
+    const citySearchInput = document.getElementById("citySearch");
+    const suggestionsContainer = document.createElement("div");
+    suggestionsContainer.classList.add("suggestions-container");
+    citySearchInput.parentNode.style.position = "relative"; 
+    citySearchInput.parentNode.appendChild(suggestionsContainer);
+
+    var apiKey = '0a3ca98b38e84a407ded4d891b605c50';
+
+    function searchCity(city) {
+        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const lat = data[0].lat;
+                    const lon = data[0].lon;
+    
+                    // Fix map variable reference
+                    weatherMap.setView([lat, lon], 10);
+                    L.marker([lat, lon]).addTo(weatherMap)
+                        .bindPopup(`${city}`)
+                        .openPopup();
+    
+                    // Call functions correctly
+                    fetchWeatherData(city);
+                    updateForecast(city);
+                    updateTrafficMap(city);
+                    fetchLocalEvents(city);
+    
+                    // Scroll to results
+                    document.querySelector(".dashboard").scrollIntoView({ behavior: "smooth" });
+                } else {
+                    alert("City not found. Please try another city.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching city data:", error);
+                
+            });
+    }
+    
+
+    citySearchInput.addEventListener("input", function () {
+        const query = citySearchInput.value.trim();
+        if (query.length > 2) {
+            fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsContainer.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(city => {
+                            const suggestion = document.createElement("div");
+                            suggestion.classList.add("suggestion-item");
+                            suggestion.textContent = `${city.name}, ${city.country}`;
+                            suggestion.addEventListener("click", function () {
+                                citySearchInput.value = city.name;
+                                suggestionsContainer.innerHTML = "";
+                                searchCity(city.name);
+                            });
+                            suggestionsContainer.appendChild(suggestion);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching city suggestions:", error));
+        } else {
+            suggestionsContainer.innerHTML = "";
+        }
+    });
+
+    searchButton.addEventListener("click", function () {
+        const city = citySearchInput.value.trim();
+        if (city) {
+            searchCity(city);
+        } else {
+            alert("Please enter a city.");
+        }
+    });
 });
+
 
 /* ==================== Header Scroll Effect ==================== */
 window.addEventListener('scroll', function () {

@@ -28,6 +28,48 @@ header {
     height: auto;
 }
 
+.suggestions-container {
+    position: absolute;
+    width: 80%;
+    margin-top: -17px;
+    left: 28%;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px; /* Prevents it from taking too much space */
+    overflow-y: auto; /* Enables scrolling for many suggestions */
+}
+
+/* Style for individual suggestion items */
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.suggestion-item:hover {
+    background: #f0f0f0;
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 1920px) {
+    .suggestions-container {
+        width: 43%; /* Uses most of the screen width */
+        max-width: none; /* Allows flexibility on smaller screens */
+        left: 50%;
+        transform: translateX(-50%); /* Centers the suggestions */
+    }
+
+    .suggestion-item {
+        font-size: 16px; /* Increases readability on small screens */
+        padding: 12px;
+    }
+}
+
 .menu-toggle {
     display: none;
     background-color: #1C4E80;
