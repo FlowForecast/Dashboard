@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     citySearchInput.parentNode.appendChild(suggestionsContainer);
 
     function searchCity(city) {
-        fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
+        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
