@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     citySearchInput.parentNode.appendChild(suggestionsContainer);
 
     function searchCity(city) {
-        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
+        fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -166,7 +166,7 @@ document.getElementById('searchButton').addEventListener('click', function () {
     var city = document.getElementById('citySearch').value;
 
     if (city) {
-        $.getJSON(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`, function (data) {
+        $.getJSON(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`, function (data) {
             if (data && data.length > 0) {
                 var lat = data[0].lat;
                 var lon = data[0].lon;
@@ -206,7 +206,11 @@ document.querySelectorAll('.read-more').forEach(button => {
 
 // Navigation button functionality
 document.getElementById('navigateButton').addEventListener('click', function () {
-    window.location.href = 'anotherpage.html'; // Change to the URL of the page you want to navigate to
+    window.location.href = 'insight.html'; // Change to the URL of the page you want to navigate to
+});
+
+document.getElementById('navigateButton1').addEventListener('click', function () {
+    window.location.href = 'dashboard.html'; // Change to the URL of the page you want to navigate to
 });
 
 // Toggle navigation menu on mobile
