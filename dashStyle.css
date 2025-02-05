@@ -30,10 +30,10 @@ header {
 
 .suggestions-container {
     position: absolute;
-    width: 80%;
+    width: 37%; /* Uses most of the screen width */
+    max-width: none; /* Allows flexibility on smaller screens */
     margin-top: -17px;
     left: 28%;
-    max-width: 400px;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -56,10 +56,47 @@ header {
 }
 
 /* Mobile-friendly adjustments */
+@media (max-width: 1440px) {
+    .suggestions-container {
+        width: 47%;
+        left: 50%;
+        transform: translateX(-50%); /* Centers the suggestions */
+    }
+
+    .suggestion-item {
+        font-size: 16px; /* Increases readability on small screens */
+        padding: 12px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .suggestions-container {
+        width: 67%;
+        left: 50%;
+        transform: translateX(-50%); /* Centers the suggestions */
+    }
+
+    .suggestion-item {
+        font-size: 16px; /* Increases readability on small screens */
+        padding: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .suggestions-container {
+        width: 85%;
+        left: 50%;
+        transform: translateX(-50%); /* Centers the suggestions */
+    }
+
+    .suggestion-item {
+        font-size: 16px; /* Increases readability on small screens */
+        padding: 12px;
+    }
+}
+
 @media (max-width: 1920px) {
     .suggestions-container {
-        width: 43%; /* Uses most of the screen width */
-        max-width: none; /* Allows flexibility on smaller screens */
         left: 50%;
         transform: translateX(-50%); /* Centers the suggestions */
     }
