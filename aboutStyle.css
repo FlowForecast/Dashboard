@@ -39,9 +39,9 @@ header {
     border-radius: 4px;
 }
 
-.menu-toggle:hover {
-    background-color: #1C4E80;
-}
+    .menu-toggle:hover {
+        background-color: #1C4E80;
+    }
 
 .main-nav {
     display: flex;
@@ -212,7 +212,7 @@ h1 {
         display: none;
         flex-direction: column;
         width: 100%;
-        background-color: #1C4E80;
+        background-color: #3b3b3b;
         position: absolute;
         top: 80px; /* Adjust based on header height */
         left: 0;
