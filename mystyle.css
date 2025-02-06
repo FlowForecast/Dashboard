@@ -253,6 +253,28 @@ footer {
         margin: 0;
     }
 
+    .footer-section a {
+        color: black;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .footer-section a::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 2px;
+        background: black;
+        transition: width 0.3s;
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+    }
+
+    .footer-section a:hover::after {
+        width: 100%;
+    }
+
 .footer-bottom {
     border-top: ridge;
     padding: 1em;
@@ -440,6 +462,22 @@ footer {
     #navigateButton:hover {
         background-color: #0056b3;
     }
+
+    #navigateButton1 {
+        background-color: #1C4E80;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5em 1em;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease-in-out;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+        #navigateButton1:hover {
+            background-color: #0056b3;
+        }
 
 .content-wrapper {
     display: flex;
