@@ -12,13 +12,13 @@
 
     <header>
         <div class="logo">
-            <img src="./insight/logo1.png" alt="Logo">
+            <a href="index.html"><img src="images/logo1.png" alt="Logo"></a>
         </div>
         <button class="menu-toggle">☰</button>
         <nav class="main-nav">
             <a href="index.html">Home</a>
             <a href="dashboard.html">Dashboard</a>
-            <a href="#">Insights</a>
+            <a class="active" href="#">Insights</a>
         </nav>
     </header>
 
@@ -60,26 +60,38 @@
         <div class="data-link"></div>
     </div>
 
+    <!-- Traffic Legend Title -->
+    <div class="traffic-legend">
+        <h3 class="legend-title">Traffic Legend</h3>
+    </div>
     <div class="traffic-status">
         <div class="status-item">
             <div class="status-circle major-delay"></div>
-            <p>Major Delay</p>
-            <p class="meaning">Significant delays are expected due to traffic congestion.</p>
+            <div class="status-text">
+                <strong>Major Delay</strong>
+                <p class="meaning">Significant delays are expected due to traffic congestion.</p>
+            </div>
         </div>
         <div class="status-item">
             <div class="status-circle minor-delay"></div>
-            <p>Minor Delay</p>
-            <p class="meaning">Some delays may occur, but traffic is moving.</p>
+            <div class="status-text">
+                <strong>Minor Delay</strong>
+                <p class="meaning">Some delays may occur, but traffic is moving.</p>
+            </div>
         </div>
         <div class="status-item">
             <div class="status-circle no-delay"></div>
-            <p>No Delay</p>
-            <p class="meaning">Traffic is flowing smoothly.</p>
+            <div class="status-text">
+                <strong>No Delay</strong>
+                <p class="meaning">Traffic is flowing smoothly.</p>
+            </div>
         </div>
         <div class="status-item">
             <div class="status-circle closed"></div>
-            <p>Closed</p>
-            <p class="meaning">The road is currently closed to traffic.</p>
+            <div class="status-text">
+                <strong>Closed</strong>
+                <p class="meaning">The road is currently closed to traffic.</p>
+            </div>
         </div>
     </div>
 

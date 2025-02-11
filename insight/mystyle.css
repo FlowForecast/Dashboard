@@ -67,8 +67,10 @@ header {
             width: 100%;
         }
 
+        .main-nav a.active {
+            border-bottom: 3px solid white;
+          }
 
-        
         footer {
             background-color: #F1F1F1; /* Adjust color as needed */
             padding: 20px;
@@ -564,44 +566,110 @@ h1 {
 
 
 
-/* Traffic Status Section */
-.traffic-status .status-item p {
+.traffic-status {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    gap: 15px;
-    padding: 10px;
-    margin-top: 10px;
-    text-align: center;
+    align-items: flex-start; /* Align text and circles to the left */
+    justify-content: center; /* Center the entire section */
+    width: fit-content; /* Adjust width based on content */
+    margin: 20px auto; /* Add spacing and center the block */
+    padding: 15px 25px; /* Add some padding for a cleaner look */
+    gap: 12px;
+    background: linear-gradient(135deg, white 30%, #e4eaf2 100%);
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+    transition: transform 0.2s ease-in-out;
+}
+.traffic-status {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Softer shadow */
+}
+
+.status-item,
+.status-item p {
+    color: #2F4F4F !important; /* Dark gray */
+    background-color: rgba(255, 255, 255, 0.1); /* Slight contrast */
+}
+.status-item {
+    color: #2F4F4F !important; /* Ensures text is dark */
+}
+
+.traffic-status:hover {
+    transform: scale(1.02); /* Slight scale-up on hover for a dynamic effect */
+}
+
+.legend-title {
     font-family: Calibri, sans-serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: bold;
+    color: #1C4E80;
+    text-align: center;
+    width: 60%;
+    padding-bottom: 8px;
+   
+}
+.status-item {
+    display: flex;
+    align-items: flex-start; /* Align items at the top */
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 16px;
+    width: 100%;
+}
+
+.status-circle {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 3px; /* Align the circle with text */
+}
+
+.status-text {
+    display: flex;
+    flex-direction: column; /* Stack label and description */
+}
+
+.status-text strong {
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.status-text p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Ensure all text inside status-item inherits the correct color */
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 20px;
+    
     color: #2F4F4F;
 }
 
-.status-item {
-    text-align: center;
-    margin: 0 10px;
-    color: #1C4E80;
-    font-family: Calibri, sans-serif;
-    font-weight: 500;
-}
-
 .status-item p {
-    color: inherit;
+    margin: 0;
 }
 
 /* Status Indicator Circles */
 .status-circle {
-    width: 20px;
-    height: 20px;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    margin: 0 auto 5px;
+    border: 2px solid #fff; /* White border for contrast */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
 }
 
 /* Status Colors */
 .major-delay {
-    background-color: #fd9a19;
+    background-color: #d81a0d;
 }
 
 .minor-delay {
@@ -609,31 +677,22 @@ h1 {
 }
 
 .no-delay {
-    background-color: #f5f8f6;
+    background-color: #f5f8f6;; /* Better contrast for 'No Delay' */
 }
 
 .closed {
     background-color: #aaa7a7;
 }
 
-/* Responsive Design */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .traffic-status {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .status-item {
-        margin: 10px;
         width: 80%;
     }
 
-    .traffic-status .status-item p {
+    .status-item {
         font-size: 18px;
-        padding: 8px;
-        gap: 10px;
+        gap: 8px;
     }
 
     .status-circle {
@@ -643,10 +702,14 @@ h1 {
 }
 
 @media (max-width: 480px) {
-    .traffic-status .status-item p {
+    .traffic-status {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .status-item {
         font-size: 16px;
-        padding: 6px;
-        gap: 8px;
+        gap: 6px;
     }
 
     .status-circle {
@@ -654,11 +717,3 @@ h1 {
         height: 16px;
     }
 }
-
-
-
-
-
-
-
-
