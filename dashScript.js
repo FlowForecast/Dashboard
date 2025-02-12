@@ -401,25 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    locationButton.addEventListener('click', () => {
-        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch location data.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const city = data.city || 'Your Location';
-                fetchLocalEvents(city);
-            })
-            .catch(error => {
-                console.error('Error fetching location:', error);
-                document.getElementById('eventsDescription').textContent =
-                    'Could not determine your location. Please try again later.';
-            });
-    });
-
     /* ==================== Initial Load ==================== */
     // Optionally, load default weather and traffic data
     // For example, load data for a default city
