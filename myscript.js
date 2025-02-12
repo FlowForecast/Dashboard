@@ -138,28 +138,32 @@ function updateWeatherAndTraffic(city, lat, lon) {
     getTrafficConditions(lat, lon);
 }
 
-// IPGeolocation API key
-var geoApiKey = 'b210b7b34c19429891fe3554d9a60476';
-
 // Use My Location button functionality
-document.getElementById('locationButton').addEventListener('click', function () {
-    $.getJSON(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoApiKey}`, function (data) {
-        var lat = data.latitude;
-        var lon = data.longitude;
-        var city = data.city;
+function useCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
 
-        // Update the map to the user's location
-        map.setView([lat, lon], 10);
-        L.marker([lat, lon]).addTo(map)
-            .bindPopup("You are here!")
-            .openPopup();
+            // Update the map with the user's location
+            map.setView([lat, lon], 13); // Zoom in closer to the user's location
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup('You are here!')
+                .openPopup();
 
-        // Update weather and traffic information
-        updateWeatherAndTraffic(city, lat, lon);
+            // Fetch weather and traffic data based on user's location
+            getWeatherData(lat, lon);
+        }, function (error) {
+            alert("Geolocation failed: " + error.message);
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+    document.querySelector(".content-wrapper").scrollIntoView({ behavior: "smooth" });
+}
 
-        document.querySelector(".content-wrapper").scrollIntoView({ behavior: "smooth" });
-    });
-});
+// Add event listener to the "Use My Location" button
+document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
 
 // Search button functionality with weather and traffic update
 document.getElementById('searchButton').addEventListener('click', function () {

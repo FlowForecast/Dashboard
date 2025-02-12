@@ -203,31 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     locationButton.addEventListener('click', () => {
-        // Fetch location using IPGeolocation API
-        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=b210b7b34c19429891fe3554d9a60476')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch location data.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const lat = parseFloat(data.latitude);
-                const lon = parseFloat(data.longitude);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
                 // Perform reverse geocoding to get accurate city name
                 const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKeyOWM}`;
 
-                return fetch(reverseGeoUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to perform reverse geocoding.');
-                        }
-                        return response.json();
-                    })
+                fetch(reverseGeoUrl)
+                    .then(response => response.json())
                     .then(geoData => {
-                        const city = geoData[0]?.name || data.city || 'Your Location';
-                        // Update weather, forecast, and traffic data
+                        const city = geoData[0]?.name || 'Your Location';
                         getWeather(lat, lon, city);
                         updateForecast(city);
                         trafficMap.setCenter({ lat, lng: lon });
@@ -235,14 +222,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateTrafficInfo(lat, lon);
 
                         document.querySelector(".dashboard").scrollIntoView({ behavior: "smooth" });
+                    })
+                    .catch(error => {
+                        console.error('Error during reverse geocoding:', error);
+                        alert('Failed to retrieve your location.');
                     });
-                    
-            })
-            
-            .catch(error => {
-                console.error('Error during location retrieval:', error);
-                alert('Failed to retrieve your location.');
+            }, (error) => {
+                console.error('Error retrieving geolocation:', error);
+                alert('Geolocation permission denied or unavailable.');
             });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
     });
 
     /* ==================== HERE Traffic Map ==================== */
