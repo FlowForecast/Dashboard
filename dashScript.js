@@ -220,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         trafficMap.setCenter({ lat, lng: lon });
                         trafficMap.setZoom(13);
                         updateTrafficInfo(lat, lon);
+                        fetchLocalEvents(city);
 
                         document.querySelector(".dashboard").scrollIntoView({ behavior: "smooth" });
                     })
