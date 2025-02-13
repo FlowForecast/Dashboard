@@ -139,34 +139,20 @@ function updateWeatherAndTraffic(city, lat, lon) {
 }
 
 // Use My Location button functionality
- function useCurrentLocation() {
+function useCurrentLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
             // Update the map with the user's location
-            map.setView([lat, lon], 13);
+            map.setView([lat, lon], 13); // Zoom in closer to the user's location
             L.marker([lat, lon]).addTo(map)
                 .bindPopup('You are here!')
                 .openPopup();
 
-            // Get the city name using reverse geocoding from OpenWeatherMap
-            fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length > 0) {
-                        var city = data[0].name;
-                        // Now update the weather and traffic with the city name
-                        updateWeatherAndTraffic(city, lat, lon);
-                    } else {
-                        alert("Unable to retrieve city name.");
-                    }
-                })
-                .catch(error => {
-                    alert("Failed to retrieve location data.");
-                    console.error("Reverse Geocoding Error:", error);
-                });
+            // Fetch weather and traffic data based on user's location
+            getWeatherData(lat, lon);
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
