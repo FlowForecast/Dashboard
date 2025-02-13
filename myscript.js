@@ -145,14 +145,30 @@ function useCurrentLocation() {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
-            // Update the map with the user's location
-            map.setView([lat, lon], 13); // Zoom in closer to the user's location
-            L.marker([lat, lon]).addTo(map)
-                .bindPopup('You are here!')
-                .openPopup();
+            // Reverse geocoding to get city name
+            fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var city = data[0].name;
 
-            // Update weather and traffic data using the correct function
-            updateWeatherAndTraffic(city, lat, lon);
+                        // Update the map with the user's location
+                        map.setView([lat, lon], 13);
+                        L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`You are here: ${city}`)
+                            .openPopup();
+
+                        // Fetch weather and traffic data based on user's location
+                        updateWeatherAndTraffic(city, lat, lon);
+                    } else {
+                        alert("City not found.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching city name:", error);
+                    alert("Failed to retrieve city name.");
+                });
+
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
