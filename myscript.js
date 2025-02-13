@@ -152,7 +152,7 @@ function useCurrentLocation() {
                 .openPopup();
 
             // Update weather and traffic data using the correct function
-            updateWeatherAndTraffic(lat, lon);
+            updateWeatherAndTraffic('Your Location', lat, lon);
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
