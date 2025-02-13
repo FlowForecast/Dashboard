@@ -152,7 +152,7 @@ function useCurrentLocation() {
                 .openPopup();
 
             // Fetch weather and traffic data based on user's location
-            getWeatherData(lat, lon);
+            
             updateWeatherAndTraffic(city, lat, lon);
         }, function (error) {
             alert("Geolocation failed: " + error.message);
