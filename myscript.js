@@ -151,8 +151,21 @@ function useCurrentLocation() {
                 .bindPopup('You are here!')
                 .openPopup();
 
-            // Update weather and traffic data using the correct function
-            updateWeatherAndTraffic('Your Location', lat, lon);
+            // Use the city name from reverse geocoding for better display
+            fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const city = data[0].name || "Your Location";
+                        updateWeatherAndTraffic(city, lat, lon);
+                    } else {
+                        updateWeatherAndTraffic("Your Location", lat, lon);
+                    }
+                })
+                .catch(error => {
+                    console.error("Reverse geocoding failed:", error);
+                    updateWeatherAndTraffic("Your Location", lat, lon);
+                });
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
@@ -161,9 +174,6 @@ function useCurrentLocation() {
     }
     document.querySelector(".content-wrapper").scrollIntoView({ behavior: "smooth" });
 }
-
-// Add event listener to the "Use My Location" button
-document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
 
 // Search button functionality with weather and traffic update
 document.getElementById('searchButton').addEventListener('click', function () {
