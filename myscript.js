@@ -175,6 +175,8 @@ function useCurrentLocation() {
     document.querySelector(".content-wrapper").scrollIntoView({ behavior: "smooth" });
 }
 
+document.getElementById('locationButton').addEventListener('click', useCurrentLocation);
+
 // Search button functionality with weather and traffic update
 document.getElementById('searchButton').addEventListener('click', function () {
     var city = document.getElementById('citySearch').value;
