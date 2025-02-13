@@ -151,8 +151,8 @@ function useCurrentLocation() {
                 .bindPopup('You are here!')
                 .openPopup();
 
-            // Fetch weather and traffic data based on user's location
-            getWeatherData(lat, lon);
+            // Update weather and traffic data using the correct function
+            updateWeatherAndTraffic(lat, lon);
         }, function (error) {
             alert("Geolocation failed: " + error.message);
         });
